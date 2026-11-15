@@ -34,6 +34,7 @@
 	<string name="keyboard_layout_dutch">Dutch</string>
 	<string name="keyboard_layout_english_india">English (India)</string>
 	<string name="keyboard_layout_eu_eurkey">EU (EurKEY)</string>
+	<string name="keyboard_layout_de_eurkey">Deutsch (EurKEY / US-QWERTY)</string>
 	<string name="keyboard_layout_faeroese">Faeroese</string>
 	<string name="keyboard_layout_finnish_with_sami">Finnish with Sami</string>
 	<string name="keyboard_layout_georgian_ergonomic">Georgian (Ergonomic)</string>

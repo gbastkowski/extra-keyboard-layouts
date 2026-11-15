@@ -35,6 +35,7 @@
     <keyboard-layout android:label="@string/keyboard_layout_dutch" android:name="keyboard_layout_dutch" android:keyboardLayout="@raw/keyboard_layout_dutch"/>
     <keyboard-layout android:label="@string/keyboard_layout_english_india" android:name="keyboard_layout_english_india" android:keyboardLayout="@raw/keyboard_layout_english_india"/>
     <keyboard-layout android:label="@string/keyboard_layout_eu_eurkey" android:name="keyboard_layout_eu_eurkey" android:keyboardLayout="@raw/keyboard_layout_eu_eurkey"/>
+    <keyboard-layout android:label="@string/keyboard_layout_de_eurkey" android:name="keyboard_layout_de_eurkey" android:keyboardLayout="@raw/keyboard_layout_eu_eurkey"/>
     <keyboard-layout android:label="@string/keyboard_layout_faeroese" android:name="keyboard_layout_faeroese" android:keyboardLayout="@raw/keyboard_layout_faeroese"/>
     <keyboard-layout android:label="@string/keyboard_layout_finnish_with_sami" android:name="keyboard_layout_finnish_with_sami" android:keyboardLayout="@raw/keyboard_layout_finnish_with_sami"/>
     <keyboard-layout android:label="@string/keyboard_layout_georgian_ergonomic" android:name="keyboard_layout_georgian_ergonomic" android:keyboardLayout="@raw/keyboard_layout_georgian_ergonomic"/>
