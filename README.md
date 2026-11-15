@@ -1,13 +1,96 @@
-# Extra Physical Keyboard Layouts
-## Development on pause indefinitely 
-To România and beyond!
+# EurKEY Keyboard Layouts
 
-[<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80px"/>](https://play.google.com/store/apps/details?id=varzan.extraKeyboardLayouts)
-[<img alt='Get it on IzzyOnDroid' src='https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png' height="80px"/>](https://apt.izzysoft.de/fdroid/index/apk/varzan.extraKeyboardLayouts)
+A fork of [calin-darie/extra-keyboard-layouts][upstream] (MIT) that keeps all
+160 bundled Android physical-keyboard layouts and stays installable on current
+Android. Originally written because I wanted [EurKEY][eurkey] on a tablet.
 
-Adds a few choices to the list of layouts to use when a physical keyboard is connected e.g. via OTG or Bluetooth.
+[upstream]: https://github.com/calin-darie/extra-keyboard-layouts
+[eurkey]: https://eurkey.steffen.bruentjen.eu/
 
-Please star this issue if you agree that Android should support these layouts out of the box: https://issuetracker.google.com/issues/155769655
+Adds choices to the layout list Android offers when a physical keyboard is
+connected over OTG or Bluetooth. Upstream stops at `targetSdk 33`, so Google
+Play refuses new installs; this fork builds against API 35 and ships its own
+signed APK.
+
+## Why this fork exists
+
+The upstream app was last updated in 2023 and targets Android 13 (API 33).
+Play rejects installs from apps that do not target API 34 or newer, so the app
+is no longer installable on current devices even though the layouts work fine.
+EurKEY is also only in the upstream Play build (v1.29), not in the GitHub
+release.
+
+This fork changes exactly that and nothing else:
+
+- `compileSdk` / `targetSdk` 35, AGP 8.7.3, Gradle 8.9
+- own `applicationId` (`name.bastkowski.eurkeylayouts`) and release signing
+- manifest `package` attribute replaced by the Gradle `namespace`
+- all 160 layouts kept byte-for-byte, including `keyboard_layout_eu_eurkey`
+
+## Install
+
+Download the APK from the releases page and open it on the device, or:
+
+```
+adb install eurkey-layouts-1.0.apk
+```
+
+The app has no launcher icon and needs no permissions. After installing,
+connect the keyboard and pick the layout:
+
+Settings → General management → Keyboard and input → Physical keyboard →
+*your keyboard* → Keyboard layouts → **EU (EurKEY)**
+
+Keep only that one layout enabled, otherwise Ctrl+Space cycles through the
+others while you type. Use the **right** Alt for level 3: Android treats the
+left Alt as a shortcut modifier.
+
+## EurKEY at a glance
+
+| Keys | Result |
+| --- | --- |
+| RightAlt + a / o / u | ä / ö / ü |
+| RightAlt + s | ß |
+| RightAlt + 5 | € |
+| RightAlt + ` / 6 | dead key for accents, followed by the base letter |
+| RightAlt + q / w / y | æ / å / ø |
+| RightAlt + Shift + 7 | Umlaut dead key |
+
+Full mapping: `app/src/main/res/raw/keyboard_layout_eu_eurkey.kcm`.
+
+## Notes for Samsung / One UI
+
+- Installing a layout provider does not refresh the keymap of an already
+  connected keyboard; unplug and replug it, or reboot.
+- If RightAlt is swallowed as a system shortcut, Ctrl+Alt combinations are the
+  reliable fallback on One UI. Ask for a patched `.kcm` if you need that.
+- The keyboard's own Mac/Win switch changes what the right Alt key sends.
+
+## Build
+
+```
+./gradlew assembleRelease
+```
+
+Output: `app/build/outputs/apk/release/app-release.apk`.
+
+Release signing reads `keystore.properties` from the repo root when present and
+falls back to an unsigned build otherwise. That file is gitignored on purpose —
+keep the keystore out of the repo:
+
+```
+storeFile=/absolute/path/to/release.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+Building on an ARM64 host (e.g. a Raspberry Pi) needs two workarounds, since
+AGP ships `aapt2` for x86_64 only: an x86_64 userland for `aapt2` (qemu
+user-mode is enough) and a full JDK instead of a headless JRE, because AGP
+invokes `jlink`.
+
+## Layouts
 
 Tested layouts:
 * Albanian
@@ -221,16 +304,29 @@ Here are the notable modifications in relation to QWERTY
 * `RALT` + [ => [
 * `RALT` + `SHIFT` + [ => {
 * ] => щ
-* `SHIFT` + ] => Ш
+* `SHIFT` + ] => Щ
 * `RALT` + ] => ]
 * `RALT` + `SHIFT` + ] => }
 * \` => ю
 * `SHIFT` + \` => Ю
 * `RALT` + \` => \`
 * `RALT` + `SHIFT` + \` => ~
-* \ => э
-* `SHIFT` + \ => Э
-* `RALT` + \ => \
-* `RALT` + `SHIFT` + \ => |
+* \\ => э
+* `SHIFT` + \\ => Э
+* `RALT` + \\ => \\
+* `RALT` + `SHIFT` + \\ => |
 
-If you found this useful, you may [buy me a drink](https://paypal.me/CalinDarie?locale.x=en_US)
+## Credits
+
+All layout files and the original app come from
+[calin-darie/extra-keyboard-layouts][upstream], MIT licensed, copyright Călin
+Darie. EurKEY itself is by Steffen Brüntjen. If upstream ever resumes
+development, this fork exists only to keep the layouts installable — go star
+the original.
+
+If you found the original useful, you may
+[buy the author a drink](https://paypal.me/CalinDarie?locale.x=en_US).
+
+## License
+
+MIT, see [LICENSE](LICENSE).
