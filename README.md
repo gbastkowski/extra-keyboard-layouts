@@ -85,10 +85,32 @@ keyAlias=...
 keyPassword=...
 ```
 
-Building on an ARM64 host (e.g. a Raspberry Pi) needs two workarounds, since
-AGP ships `aapt2` for x86_64 only: an x86_64 userland for `aapt2` (qemu
-user-mode is enough) and a full JDK instead of a headless JRE, because AGP
-invokes `jlink`.
+### Building on ARM64 (aarch64)
+
+Google ships `aapt2` for x86_64 only, and AGP invokes `jlink`, so a headless JRE
+is not enough either. `build-aarch64.sh` handles both: it bootstraps everything
+it needs into `$TOOLCHAIN` (default `~/android-toolchain`) on first run and
+reuses it afterwards.
+
+```
+./build-aarch64.sh                    # first run downloads ~200 MB
+./build-aarch64.sh --offline          # later runs, extra args go to gradlew
+```
+
+What it sets up, and why:
+
+| Piece | Purpose |
+|---|---|
+| Temurin JDK 17 | AGP calls `jlink`; runtime-only JREs fail |
+| `aapt2dir/aapt2` + `x86root/` | x86_64 `aapt2` from the AGP maven artifact, plus a minimal x86_64 glibc (`libc6`, `libgcc-s1`) unpacked from Debian, since an ARM host has no x86_64 libs |
+| `aapt2wrap/aapt2` | shim running the two above under `qemu-x86_64-static`, passed to AGP as `android.aapt2FromMavenOverride` |
+| `$ANDROID_HOME` | platform 35 + build-tools, installed via `sdkmanager` when `platforms/android-35` is absent |
+
+Requires `qemu-user-static` (`apt-get install qemu-user-static`), `curl`,
+`unzip`, `ar`. Override paths with `TOOLCHAIN=`, `ANDROID_HOME=`, `JAVA_HOME=`,
+or point `DEBIAN_MIRROR=` at a closer mirror. Debian package versions are
+resolved from the pool listing at run time, so point releases do not break it.
+
 
 ## Layouts
 
