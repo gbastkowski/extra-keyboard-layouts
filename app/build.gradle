@@ -1,24 +1,45 @@
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 33
-    buildToolsVersion "33.0.1"
-    defaultConfig {
-        applicationId "varzan.extraKeyboardLayouts"
-        minSdkVersion 16
-        targetSdkVersion 33
-        versionCode 1029
-        versionName "1.29"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+def keystorePropsFile = rootProject.file("keystore.properties")
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+android {
+    namespace 'name.bastkowski.eurkeylayouts'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "name.bastkowski.eurkeylayouts"
+        minSdk 21
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropsFile.exists()) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 }

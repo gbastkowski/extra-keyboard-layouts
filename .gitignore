@@ -19,3 +19,7 @@ app/release/
 *.keystore
 *.pepk
 .vs/slnx.sqlite
+
+# local secrets / build
+keystore.properties
+local.properties
